@@ -26,7 +26,15 @@ async function atualizaLivro(livro) {
 
 async function buscaLivro(livroId) {
   try {
-    return await Livro.findOne({ where: { livro_id: livroId } });
+    return await Livro.findOne({ where: { livro_id: livroId }, raw: true });
+  } catch (err) {
+    throw err;
+  }
+}
+
+async function buscaLivros() {
+  try {
+    return await Livro.findAll({ where: {} });
   } catch (err) {
     throw err;
   }
@@ -53,6 +61,7 @@ export default {
   limpaBanco,
   encontraLivroPorAutor,
   buscaLivro,
+  buscaLivros,
   atualizaLivro,
   deletaLivro,
 };

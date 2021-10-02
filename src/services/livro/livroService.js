@@ -1,4 +1,6 @@
 import LivroRepository from "../../repositories/livroRepository.js";
+import LivroInfoRepository from "../../repositories/livroInfoRepository.js";
+import AutorRepository from "../../repositories/autorRepository.js";
 import VendaRepository from "../../repositories/vendaRepository.js";
 
 async function insereLivro(livro) {
@@ -36,8 +38,48 @@ async function deletaLivro(livroId) {
   return {};
 }
 
+async function buscaLivros(autorId) {
+  if (autorId) {
+    const existeAutor = AutorRepository.encontraAutor(autorId);
+
+    if (!existeAutor) {
+      throw new Error("Autor não encontrado!");
+    }
+
+    return await LivroRepository.encontraLivroPorAutor(autorId);
+  }
+
+  return await LivroRepository.buscaLivros();
+}
+
+async function insereInfo(livroInfo) {
+  const existeLivro = await LivroRepository.buscaLivro(livroInfo.livroId);
+
+  if (!existeLivro) {
+    throw new Error("Livro não encontrado!");
+  }
+
+  return await LivroInfoRepository.insereInfo(livroInfo);
+}
+
+async function buscaLivroInfo(livroId) {
+  const existeLivro = await LivroRepository.buscaLivro(livroId);
+
+  if (!existeLivro) {
+    throw new Error("Livro não encontrado!");
+  }
+
+  const info = await LivroInfoRepository.buscaLivroInfo(livroId);
+  existeLivro.info = info;
+
+  return existeLivro;
+}
+
 export default {
   insereLivro,
   atualizaLivro,
   deletaLivro,
+  buscaLivros,
+  insereInfo,
+  buscaLivroInfo,
 };

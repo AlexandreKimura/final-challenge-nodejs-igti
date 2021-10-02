@@ -5,4 +5,4 @@ function mongodbConexao() {
   return new mongodb.MongoClient(uri);
 }
 
-export { mongodbConexao };
+export default mongodbConexao;

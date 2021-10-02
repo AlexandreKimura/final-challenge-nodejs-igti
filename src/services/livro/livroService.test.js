@@ -16,7 +16,7 @@ describe("Testes unitários para o livro!", () => {
 
   afterAll(async () => postgresConexao.close());
 
-  test("Deve ser possível cadastrar um livro", async () => {
+  test.skip("Deve ser possível cadastrar um livro", async () => {
     const autorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre",
       email: "alexandre@test.com",
@@ -34,7 +34,7 @@ describe("Testes unitários para o livro!", () => {
     expect(livroCriado).toHaveProperty("livroId");
   });
 
-  test("Deve ser possível atualizar um livro", async () => {
+  test.skip("Deve ser possível atualizar um livro", async () => {
     const autorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre",
       email: "alexandre@test.com",
@@ -66,7 +66,7 @@ describe("Testes unitários para o livro!", () => {
     expect(livroAtualizado.estoque).toEqual(atualizaLivro.estoque);
   });
 
-  test("Não deve ser possível atualizar um livro inexistente!", async () => {
+  test.skip("Não deve ser possível atualizar um livro inexistente!", async () => {
     const autorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre",
       email: "alexandre@test.com",
@@ -93,7 +93,7 @@ describe("Testes unitários para o livro!", () => {
     );
   });
 
-  test("Não deve ser possível excluir um livro com vendas", async () => {
+  test.skip("Não deve ser possível excluir um livro com vendas", async () => {
     const clienteCriado = await ClienteRepository.insereCliente({
       nome: "Alexandre Primeiro",
       email: "alexandr@test.com.br",
@@ -127,7 +127,7 @@ describe("Testes unitários para o livro!", () => {
     );
   });
 
-  test("Deve ser possível excluir um livro", async () => {
+  test.skip("Deve ser possível excluir um livro", async () => {
     const autorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre",
       email: "alexandre@test.com",
@@ -146,7 +146,7 @@ describe("Testes unitários para o livro!", () => {
     expect(livroExcluido).toEqual({});
   });
 
-  test("Não deve ser possível excluir um livro inexistente", async () => {
+  test.skip("Não deve ser possível excluir um livro inexistente", async () => {
     const autorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre",
       email: "alexandre@test.com",
@@ -165,34 +165,200 @@ describe("Testes unitários para o livro!", () => {
     );
   });
 
-  /*
-
-  test("Deve ser possível consultar todos os autores", async () => {
-    await AutorRepository.insereAutor({
+  test.skip("Deve ser possível consultar todos os livros", async () => {
+    const autorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre",
       email: "alexandre@test.com",
       telefone: "9999-9999",
     });
 
-    await AutorRepository.insereAutor({
+    const segundoAutorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre2",
       email: "alexandre2@test.com",
       telefone: "9998-9999",
     });
 
-    const autores = await AutorService.buscaAutores();
-    expect(autores.length).toBe(2);
+    await LivroRepository.insereLivro({
+      nome: "Livro 1",
+      valor: 25,
+      estoque: 10,
+      autorId: autorCriado.autorId,
+    });
+
+    await LivroRepository.insereLivro({
+      nome: "Livro 2",
+      valor: 30,
+      estoque: 15,
+      autorId: segundoAutorCriado.autorId,
+    });
+
+    const livros = await LivroService.buscaLivros();
+    expect(livros.length).toBe(2);
+    expect(livros[0].nome).toEqual("Livro 1");
+    expect(livros[1].estoque).toEqual(15);
   });
 
-  test("Deve ser possível retornar um autor específico", async () => {
-    const novoAutor = await AutorRepository.insereAutor({
+  test.skip("Deve ser possível consultar todos os livros a partir de um autor", async () => {
+    const autorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre",
       email: "alexandre@test.com",
       telefone: "9999-9999",
     });
 
-    const autor = await AutorService.buscaAutor(novoAutor.autorId);
-    expect(autor).toHaveProperty("autorId");
-    expect(autor.email).toEqual(novoAutor.email);
+    const segundoAutorCriado = await AutorRepository.insereAutor({
+      nome: "Alexandre2",
+      email: "alexandre2@test.com",
+      telefone: "9998-9999",
+    });
+
+    await LivroRepository.insereLivro({
+      nome: "Livro 1",
+      valor: 25,
+      estoque: 10,
+      autorId: autorCriado.autorId,
+    });
+
+    await LivroRepository.insereLivro({
+      nome: "Livro 2",
+      valor: 30,
+      estoque: 15,
+      autorId: segundoAutorCriado.autorId,
+    });
+
+    await LivroRepository.insereLivro({
+      nome: "Livro 3",
+      valor: 35,
+      estoque: 20,
+      autorId: segundoAutorCriado.autorId,
+    });
+
+    const livros = await LivroService.buscaLivros(segundoAutorCriado.autorId);
+
+    expect(livros.length).toBe(2);
+    expect(livros[0].nome).toEqual("Livro 2");
+    expect(livros[1].estoque).toEqual(20);
+  });
+
+  test.skip("Deve ser possível cadastrar informações de um livro", async () => {
+    const autorCriado = await AutorRepository.insereAutor({
+      nome: "Alexandre",
+      email: "alexandre@test.com",
+      telefone: "9999-9999",
+    });
+
+    const livro = await LivroRepository.insereLivro({
+      nome: "Livro 1",
+      valor: 25,
+      estoque: 10,
+      autorId: autorCriado.autorId,
+    });
+
+    const livroInfo = {
+      livroId: livro.livroId,
+      descricao: "Primeira descrição",
+      paginas: 250,
+      editora: "UEL",
+      avaliacoes: [
+        {
+          nome: "Alexandre avaliação 1",
+          nota: 5,
+          avaliacao: "Descrição da avaliação",
+        },
+      ],
+    };
+
+    await LivroService.insereInfo(livroInfo);
+    const res = await LivroService.buscaLivroInfo(livro.livroId);
+    expect(res.info[0].livroId).toEqual(livro.livroId);
+    expect(res.info[0]).toHaveProperty("descricao");
+    expect(res.info[0]).toHaveProperty("paginas");
+    expect(res.info[0]).toHaveProperty("editora");
+    expect(res.info[0]).toHaveProperty("avaliacoes");
+  });
+
+  test.skip("Deve ser possível consultar um livro e retornar suas informações", async () => {
+    const autorCriado = await AutorRepository.insereAutor({
+      nome: "Alexandre",
+      email: "alexandre@test.com",
+      telefone: "9999-9999",
+    });
+
+    const livro = await LivroRepository.insereLivro({
+      nome: "Livro 1",
+      valor: 25,
+      estoque: 10,
+      autorId: autorCriado.autorId,
+    });
+
+    const livroInfo = {
+      livroId: livro.livroId,
+      descricao: "Primeira descrição",
+      paginas: 250,
+      editora: "UEL",
+      avaliacoes: [
+        {
+          nome: "Alexandre avaliação 1",
+          nota: 5,
+          avaliacao: "Descrição da avaliação",
+        },
+      ],
+    };
+
+    const livroInfo2 = {
+      livroId: livro.livroId,
+      descricao: "Segunda descrição",
+      paginas: 150,
+      editora: "UTFPR",
+      avaliacoes: [
+        {
+          nome: "Alexandre avaliação 2",
+          nota: 4,
+          avaliacao: "Descrição da avaliação",
+        },
+      ],
+    };
+
+    await LivroService.insereInfo(livroInfo);
+    await LivroService.insereInfo(livroInfo2);
+    const res = await LivroService.buscaLivroInfo(livro.livroId);
+    expect(res.info[0]).toEqual(livroInfo);
+    expect(res.info[1]).toEqual(livroInfo2);
+  }, 30000);
+
+  /*test.skip("Deve ser possível atualizar informações de um livro", async () => {
+    const autorCriado = await AutorRepository.insereAutor({
+      nome: "Alexandre",
+      email: "alexandre@test.com",
+      telefone: "9999-9999",
+    });
+
+    const livro = await LivroRepository.insereLivro({
+      nome: "Livro 1",
+      valor: 25,
+      estoque: 10,
+      autorId: autorCriado.autorId,
+    });
+
+    const livroInfo = {
+      livroId: livro.livroId,
+      descricao: "Primeira descrição",
+      paginas: 250,
+      editora: "UEL",
+      avaliacoes: [
+        {
+          nome: "Alexandre avaliação 1",
+          nota: 5,
+          avaliacao: "Descrição da avaliação",
+        },
+      ],
+    };
+
+    await LivroService.insereInfo(livroInfo);
+    const res = await LivroService.buscaLivroInfo(livro.livroId);
+    expect(res.info[0].livroId).toEqual(livro.livroId);
+    expect(res.info[0]).toHaveProperty("descricao");
+    expect(res.info[0]).toHaveProperty("paginas");
+    expect(res.info[0]).toHaveProperty("editora");
+    expect(res.info[0]).toHaveProperty("avaliacoes");
   });*/
 });
