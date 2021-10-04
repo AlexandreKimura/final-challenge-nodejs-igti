@@ -1,3 +1,4 @@
+import Livro from "../models/livroModel.js";
 import Venda from "../models/vendaModel.js";
 
 async function insereVenda(venda) {
@@ -24,6 +25,38 @@ async function encontraVendaPorLivro(livroId) {
   }
 }
 
+async function buscaVendas() {
+  try {
+    return await Venda.findAll({ where: {} });
+  } catch (err) {
+    throw err;
+  }
+}
+
+async function buscaVenda(vendaId) {
+  try {
+    return await Venda.findOne({ where: { vendaId } });
+  } catch (err) {
+    throw err;
+  }
+}
+
+async function buscaVendaPorAutor(autorId) {
+  try {
+    return await Venda.findAll({
+      include: [
+        {
+          model: Livro,
+          where: { autorId: autorId },
+        },
+      ],
+      raw: true,
+    });
+  } catch (err) {
+    throw err;
+  }
+}
+
 async function limpaBanco() {
   try {
     await Venda.destroy({ where: {} });
@@ -37,4 +70,7 @@ export default {
   encontraVendaPorCliente,
   encontraVendaPorLivro,
   limpaBanco,
+  buscaVendas,
+  buscaVenda,
+  buscaVendaPorAutor,
 };

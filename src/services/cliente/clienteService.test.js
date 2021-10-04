@@ -9,12 +9,12 @@ import postgresConexao from "../../bd/postgresConexao.js";
 describe.skip("Testes unitários para o cliente!", () => {
   beforeEach(async () => {
     await VendaRepository.limpaBanco();
-    await ClienteRepository.limpaBanco();
     await LivroRepository.limpaBanco();
     await AutorRepository.limpaBanco();
+    await ClienteRepository.limpaBanco();
   });
 
-  afterAll(async () => postgresConexao.close());
+  afterAll(async () => await postgresConexao.close());
 
   test("Deve ser possível criar um novo cliente", async () => {
     const cliente = {

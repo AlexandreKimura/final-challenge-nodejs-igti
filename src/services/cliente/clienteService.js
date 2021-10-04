@@ -6,9 +6,7 @@ async function insereCliente(cliente) {
 }
 
 async function atualizaCliente(cliente) {
-  const existeCliente = await ClienteRepository.encontraCliente(
-    cliente.clienteId
-  );
+  const existeCliente = await ClienteRepository.buscaCliente(cliente.clienteId);
 
   if (!existeCliente) {
     throw new Error("Cliente não existe!");
@@ -24,7 +22,7 @@ async function atualizaCliente(cliente) {
 }
 
 async function deletaCliente(clienteId) {
-  const existeCliente = await ClienteRepository.encontraCliente(clienteId);
+  const existeCliente = await ClienteRepository.buscaCliente(clienteId);
 
   if (!existeCliente) {
     throw new Error("Cliente não existe!");

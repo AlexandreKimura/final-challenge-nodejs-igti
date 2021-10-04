@@ -17,7 +17,7 @@ describe.skip("Testes unitários para o livro!", () => {
 
   afterAll(async () => {
     await LivroInfoRepository.limpaBanco();
-    postgresConexao.close();
+    await postgresConexao.close();
   });
 
   test("Deve ser possível cadastrar um livro", async () => {

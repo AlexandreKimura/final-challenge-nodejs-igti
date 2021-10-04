@@ -1,16 +1,20 @@
 import AutorRepository from "../../repositories/autorRepository.js";
 import LivroRepository from "../../repositories/livroRepository.js";
+import ClienteRepository from "../../repositories/clienteRepository.js";
+import VendaRepository from "../../repositories/vendaRepository.js";
 
 import AutorService from "./autorService.js";
 import postgresConexao from "../../bd/postgresConexao.js";
 
-describe.skip("Testes unitários para o autor!", () => {
+describe("Testes unitários para o autor!", () => {
   beforeEach(async () => {
+    await VendaRepository.limpaBanco();
     await LivroRepository.limpaBanco();
     await AutorRepository.limpaBanco();
+    await ClienteRepository.limpaBanco();
   });
 
-  afterAll(async () => postgresConexao.close());
+  afterAll(async () => await postgresConexao.close());
 
   test("Deve ser possível cadastrar um autor", async () => {
     const autor = {

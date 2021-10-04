@@ -16,14 +16,6 @@ async function atualizaCliente(cliente) {
   }
 }
 
-async function encontraCliente(clienteId) {
-  try {
-    return await Cliente.findOne({ where: { cliente_id: clienteId } });
-  } catch (err) {
-    throw err;
-  }
-}
-
 async function limpaBanco() {
   try {
     await Cliente.destroy({ where: {} });
@@ -59,7 +51,6 @@ async function buscaCliente(clienteId) {
 export default {
   insereCliente,
   atualizaCliente,
-  encontraCliente,
   limpaBanco,
   deletaCliente,
   buscaClientes,
