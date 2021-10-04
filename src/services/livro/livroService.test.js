@@ -2,11 +2,12 @@ import AutorRepository from "../../repositories/autorRepository.js";
 import LivroRepository from "../../repositories/livroRepository.js";
 import ClienteRepository from "../../repositories/clienteRepository.js";
 import VendaRepository from "../../repositories/vendaRepository.js";
+import LivroInfoRepository from "../../repositories/livroInfoRepository.js";
 
 import LivroService from "./livroService.js";
 import postgresConexao from "../../bd/postgresConexao.js";
 
-describe("Testes unitários para o livro!", () => {
+describe.skip("Testes unitários para o livro!", () => {
   beforeEach(async () => {
     await VendaRepository.limpaBanco();
     await LivroRepository.limpaBanco();
@@ -14,9 +15,12 @@ describe("Testes unitários para o livro!", () => {
     await ClienteRepository.limpaBanco();
   });
 
-  afterAll(async () => postgresConexao.close());
+  afterAll(async () => {
+    await LivroInfoRepository.limpaBanco();
+    postgresConexao.close();
+  });
 
-  test.skip("Deve ser possível cadastrar um livro", async () => {
+  test("Deve ser possível cadastrar um livro", async () => {
     const autorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre",
       email: "alexandre@test.com",
@@ -34,7 +38,7 @@ describe("Testes unitários para o livro!", () => {
     expect(livroCriado).toHaveProperty("livroId");
   });
 
-  test.skip("Deve ser possível atualizar um livro", async () => {
+  test("Deve ser possível atualizar um livro", async () => {
     const autorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre",
       email: "alexandre@test.com",
@@ -66,7 +70,7 @@ describe("Testes unitários para o livro!", () => {
     expect(livroAtualizado.estoque).toEqual(atualizaLivro.estoque);
   });
 
-  test.skip("Não deve ser possível atualizar um livro inexistente!", async () => {
+  test("Não deve ser possível atualizar um livro inexistente!", async () => {
     const autorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre",
       email: "alexandre@test.com",
@@ -93,7 +97,7 @@ describe("Testes unitários para o livro!", () => {
     );
   });
 
-  test.skip("Não deve ser possível excluir um livro com vendas", async () => {
+  test("Não deve ser possível excluir um livro com vendas", async () => {
     const clienteCriado = await ClienteRepository.insereCliente({
       nome: "Alexandre Primeiro",
       email: "alexandr@test.com.br",
@@ -127,7 +131,7 @@ describe("Testes unitários para o livro!", () => {
     );
   });
 
-  test.skip("Deve ser possível excluir um livro", async () => {
+  test("Deve ser possível excluir um livro", async () => {
     const autorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre",
       email: "alexandre@test.com",
@@ -146,7 +150,7 @@ describe("Testes unitários para o livro!", () => {
     expect(livroExcluido).toEqual({});
   });
 
-  test.skip("Não deve ser possível excluir um livro inexistente", async () => {
+  test("Não deve ser possível excluir um livro inexistente", async () => {
     const autorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre",
       email: "alexandre@test.com",
@@ -165,7 +169,7 @@ describe("Testes unitários para o livro!", () => {
     );
   });
 
-  test.skip("Deve ser possível consultar todos os livros", async () => {
+  test("Deve ser possível consultar todos os livros", async () => {
     const autorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre",
       email: "alexandre@test.com",
@@ -198,7 +202,7 @@ describe("Testes unitários para o livro!", () => {
     expect(livros[1].estoque).toEqual(15);
   });
 
-  test.skip("Deve ser possível consultar todos os livros a partir de um autor", async () => {
+  test("Deve ser possível consultar todos os livros a partir de um autor", async () => {
     const autorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre",
       email: "alexandre@test.com",
@@ -239,7 +243,7 @@ describe("Testes unitários para o livro!", () => {
     expect(livros[1].estoque).toEqual(20);
   });
 
-  test.skip("Deve ser possível cadastrar informações de um livro", async () => {
+  test("Deve ser possível cadastrar informações de um livro", async () => {
     const autorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre",
       email: "alexandre@test.com",
@@ -274,9 +278,9 @@ describe("Testes unitários para o livro!", () => {
     expect(res.info[0]).toHaveProperty("paginas");
     expect(res.info[0]).toHaveProperty("editora");
     expect(res.info[0]).toHaveProperty("avaliacoes");
-  });
+  }, 30000);
 
-  test.skip("Deve ser possível consultar um livro e retornar suas informações", async () => {
+  test("Deve ser possível consultar um livro e retornar suas informações", async () => {
     const autorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre",
       email: "alexandre@test.com",
@@ -325,7 +329,7 @@ describe("Testes unitários para o livro!", () => {
     expect(res.info[1]).toEqual(livroInfo2);
   }, 30000);
 
-  /*test.skip("Deve ser possível atualizar informações de um livro", async () => {
+  test("Deve ser possível atualizar informações de um livro", async () => {
     const autorCriado = await AutorRepository.insereAutor({
       nome: "Alexandre",
       email: "alexandre@test.com",
@@ -339,7 +343,7 @@ describe("Testes unitários para o livro!", () => {
       autorId: autorCriado.autorId,
     });
 
-    const livroInfo = {
+    await LivroService.insereInfo({
       livroId: livro.livroId,
       descricao: "Primeira descrição",
       paginas: 250,
@@ -351,14 +355,152 @@ describe("Testes unitários para o livro!", () => {
           avaliacao: "Descrição da avaliação",
         },
       ],
+    });
+
+    const livroAtualizaInfo = {
+      livroId: livro.livroId,
+      descricao: "Primeira descrição atualizada",
+      paginas: 300,
+      editora: "UTFPR",
+      avaliacoes: [
+        {
+          nome: "Alexandre avaliação 2",
+          nota: 6,
+          avaliacao: "Descrição da avaliação atualizada",
+        },
+      ],
     };
 
-    await LivroService.insereInfo(livroInfo);
-    const res = await LivroService.buscaLivroInfo(livro.livroId);
-    expect(res.info[0].livroId).toEqual(livro.livroId);
-    expect(res.info[0]).toHaveProperty("descricao");
-    expect(res.info[0]).toHaveProperty("paginas");
-    expect(res.info[0]).toHaveProperty("editora");
-    expect(res.info[0]).toHaveProperty("avaliacoes");
-  });*/
+    const res = await LivroService.atualizaLivroInfo(livroAtualizaInfo);
+    expect(res.info[0].livroId).toEqual(livroAtualizaInfo.livroId);
+    expect(res.info[0].descricao).toEqual(livroAtualizaInfo.descricao);
+    expect(res.info[0].paginas).toEqual(livroAtualizaInfo.paginas);
+    expect(res.info[0].editora).toEqual(livroAtualizaInfo.editora);
+    expect(res.info[0].avaliacoes).toEqual(livroAtualizaInfo.avaliacoes);
+  }, 30000);
+
+  test("Deve ser possível excluir informações de um livro", async () => {
+    const autorCriado = await AutorRepository.insereAutor({
+      nome: "Alexandre",
+      email: "alexandre@test.com",
+      telefone: "9999-9999",
+    });
+
+    const livro = await LivroRepository.insereLivro({
+      nome: "Livro 1",
+      valor: 25,
+      estoque: 10,
+      autorId: autorCriado.autorId,
+    });
+
+    await LivroService.insereInfo({
+      livroId: livro.livroId,
+      descricao: "Primeira descrição",
+      paginas: 250,
+      editora: "UEL",
+      avaliacoes: [
+        {
+          nome: "Alexandre avaliação 1",
+          nota: 5,
+          avaliacao: "Descrição da avaliação",
+        },
+      ],
+    });
+
+    const res = await LivroService.deletaLivroInfo(livro.livroId);
+    expect(res.info.length).toBe(0);
+  }, 30000);
+
+  test("Deve ser possível cadastrar uma avaliação de um livro", async () => {
+    const autorCriado = await AutorRepository.insereAutor({
+      nome: "Alexandre",
+      email: "alexandre@test.com",
+      telefone: "9999-9999",
+    });
+
+    const livro = await LivroRepository.insereLivro({
+      nome: "Livro 1",
+      valor: 25,
+      estoque: 10,
+      autorId: autorCriado.autorId,
+    });
+
+    await LivroService.insereInfo({
+      livroId: livro.livroId,
+      descricao: "Primeira descrição",
+      paginas: 250,
+      editora: "UEL",
+      avaliacoes: [
+        {
+          nome: "Alexandre avaliação 1",
+          nota: 5,
+          avaliacao: "Descrição da avaliação",
+        },
+      ],
+    });
+
+    const novaAvaliacao = {
+      nome: "Nova avaliacao",
+      nota: 9,
+      avaliacao: "Descrição da nova avaliação",
+    };
+
+    const res = await LivroService.insereAvaliacao(
+      novaAvaliacao,
+      livro.livroId
+    );
+    expect(res.info[0].avaliacoes.length).toBe(2);
+    expect(res.info[0].avaliacoes[1].nome).toEqual(novaAvaliacao.nome);
+    expect(res.info[0].avaliacoes[1].nota).toEqual(novaAvaliacao.nota);
+    expect(res.info[0].avaliacoes[1].avaliacao).toEqual(
+      novaAvaliacao.avaliacao
+    );
+  }, 30000);
+
+  test("Deve ser possível excluir uma avaliação de um livro", async () => {
+    const autorCriado = await AutorRepository.insereAutor({
+      nome: "Alexandre",
+      email: "alexandre@test.com",
+      telefone: "9999-9999",
+    });
+
+    const livro = await LivroRepository.insereLivro({
+      nome: "Livro 1",
+      valor: 25,
+      estoque: 10,
+      autorId: autorCriado.autorId,
+    });
+
+    await LivroService.insereInfo({
+      livroId: livro.livroId,
+      descricao: "Primeira descrição",
+      paginas: 250,
+      editora: "UEL",
+      avaliacoes: [
+        {
+          nome: "Alexandre avaliação 1",
+          nota: 5,
+          avaliacao: "Descrição da avaliação",
+        },
+        {
+          nome: "Alexandre avaliação 2",
+          nota: 6,
+          avaliacao: "Descrição da avaliação 2",
+        },
+        {
+          nome: "Alexandre avaliação 3",
+          nota: 8,
+          avaliacao: "Descrição da avaliação 3",
+        },
+      ],
+    });
+
+    const res = await LivroService.deletaAvaliacao(livro.livroId, 0);
+    expect(res.info[0].avaliacoes.length).toBe(2);
+    expect(res.info[0].avaliacoes[0].nome).toEqual("Alexandre avaliação 2");
+    expect(res.info[0].avaliacoes[0].nota).toEqual(6);
+    expect(res.info[0].avaliacoes[0].avaliacao).toEqual(
+      "Descrição da avaliação 2"
+    );
+  }, 30000);
 });

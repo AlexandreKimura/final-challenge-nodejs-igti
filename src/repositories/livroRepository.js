@@ -24,8 +24,11 @@ async function atualizaLivro(livro) {
   }
 }
 
-async function buscaLivro(livroId) {
+async function buscaLivro(livroId, atualiza = 0) {
   try {
+    if (atualiza) {
+      return await Livro.findOne({ where: { livro_id: livroId } });
+    }
     return await Livro.findOne({ where: { livro_id: livroId }, raw: true });
   } catch (err) {
     throw err;

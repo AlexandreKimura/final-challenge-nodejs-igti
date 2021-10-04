@@ -8,7 +8,7 @@ async function insereLivro(livro) {
 }
 
 async function atualizaLivro(livro) {
-  const existeLivro = await LivroRepository.buscaLivro(livro.livroId);
+  const existeLivro = await LivroRepository.buscaLivro(livro.livroId, 1);
 
   if (!existeLivro) {
     throw new Error("Livro não encontrado!");
@@ -75,6 +75,62 @@ async function buscaLivroInfo(livroId) {
   return existeLivro;
 }
 
+async function atualizaLivroInfo(livro) {
+  const existeLivro = await LivroRepository.buscaLivro(livro.livroId);
+
+  if (!existeLivro) {
+    throw new Error("Livro não encontrado!");
+  }
+
+  await LivroInfoRepository.atualizaLivroInfo(livro);
+  const info = await LivroInfoRepository.buscaLivroInfo(livro.livroId);
+  existeLivro.info = info;
+
+  return existeLivro;
+}
+
+async function deletaLivroInfo(livroId) {
+  const existeLivro = await LivroRepository.buscaLivro(livroId);
+
+  if (!existeLivro) {
+    throw new Error("Livro não encontrado!");
+  }
+
+  await LivroInfoRepository.deletaLivroInfo(livroId);
+  const info = await LivroInfoRepository.buscaLivroInfo(livroId);
+  existeLivro.info = info;
+
+  return existeLivro;
+}
+
+async function insereAvaliacao(avaliacao, livroId) {
+  const existeLivro = await LivroRepository.buscaLivro(livroId);
+
+  if (!existeLivro) {
+    throw new Error("Livro não encontrado!");
+  }
+
+  await LivroInfoRepository.insereAvaliacao(avaliacao, livroId);
+  const info = await LivroInfoRepository.buscaLivroInfo(livroId);
+  existeLivro.info = info;
+
+  return existeLivro;
+}
+
+async function deletaAvaliacao(livroId, index) {
+  const existeLivro = await LivroRepository.buscaLivro(livroId);
+
+  if (!existeLivro) {
+    throw new Error("Livro não encontrado!");
+  }
+
+  await LivroInfoRepository.deletaAvaliacao(livroId, index);
+  const info = await LivroInfoRepository.buscaLivroInfo(livroId);
+  existeLivro.info = info;
+
+  return existeLivro;
+}
+
 export default {
   insereLivro,
   atualizaLivro,
@@ -82,4 +138,8 @@ export default {
   buscaLivros,
   insereInfo,
   buscaLivroInfo,
+  atualizaLivroInfo,
+  deletaLivroInfo,
+  insereAvaliacao,
+  deletaAvaliacao,
 };
