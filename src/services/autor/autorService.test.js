@@ -6,7 +6,7 @@ import VendaRepository from "../../repositories/vendaRepository.js";
 import AutorService from "./autorService.js";
 import postgresConexao from "../../bd/postgresConexao.js";
 
-describe("Testes unitários para o autor!", () => {
+describe.skip("Testes unitários para o autor!", () => {
   beforeEach(async () => {
     await VendaRepository.limpaBanco();
     await LivroRepository.limpaBanco();
