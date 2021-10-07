@@ -3,7 +3,7 @@ import app from "../../index.js";
 
 import AutorRepository from "../../repositories/autorRepository.js";
 
-describe("Testes de integração - Autor", () => {
+describe.skip("Testes de integração - Autor", () => {
   beforeEach(async () => {
     await AutorRepository.limpaBanco();
   });

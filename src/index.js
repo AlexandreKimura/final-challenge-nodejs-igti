@@ -28,6 +28,4 @@ app.use("/autor", autorRouter);
 app.use("/livro", livroRouter);
 app.use("/venda", vendaRouter);
 
-app.listen(3000, () => console.log("API Started!"));
-
 export default app;

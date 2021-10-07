@@ -1,4 +1,6 @@
-async function criaCliente(req, res) {
+import ClienteService from "../../services/cliente/clienteService.js";
+
+async function insereCliente(req, res, next) {
   try {
     let cliente = req.body;
 
@@ -14,6 +16,21 @@ async function criaCliente(req, res) {
       );
     }
 
-    //service
+    cliente = await ClienteService.insereCliente(cliente);
+    return res.status(201).json(cliente);
   } catch (err) {}
 }
+
+async function buscaCliente(req, res, next) {
+  try {
+    const clienteId = req.params.clienteId;
+
+    const cliente = await ClienteService.buscaCliente(clienteId);
+    return res.json(cliente);
+  } catch (err) {}
+}
+
+export default {
+  insereCliente,
+  buscaCliente,
+};

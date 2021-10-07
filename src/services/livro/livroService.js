@@ -38,6 +38,10 @@ async function deletaLivro(livroId) {
   return {};
 }
 
+async function buscaLivro(livroId) {
+  return await LivroRepository.buscaLivro(livroId);
+}
+
 async function buscaLivros(autorId) {
   if (autorId) {
     const existeAutor = AutorRepository.encontraAutor(autorId);
@@ -135,6 +139,7 @@ export default {
   insereLivro,
   atualizaLivro,
   deletaLivro,
+  buscaLivro,
   buscaLivros,
   insereInfo,
   buscaLivroInfo,
