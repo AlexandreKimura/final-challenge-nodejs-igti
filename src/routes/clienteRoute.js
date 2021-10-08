@@ -1,4 +1,5 @@
 import express from "express";
+import { authorize } from "../basicAuth/admin.js";
 import ClienteController from "../controllers/cliente/clienteController.js";
 
 const router = express.Router();

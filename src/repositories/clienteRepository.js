@@ -48,6 +48,14 @@ async function buscaCliente(clienteId) {
   }
 }
 
+async function buscaClientePorEmailESenha(email, senha) {
+  try {
+    return await Cliente.findOne({ where: { email, senha } });
+  } catch (err) {
+    throw err;
+  }
+}
+
 export default {
   insereCliente,
   atualizaCliente,
@@ -55,4 +63,5 @@ export default {
   deletaCliente,
   buscaClientes,
   buscaCliente,
+  buscaClientePorEmailESenha,
 };

@@ -69,10 +69,15 @@ async function buscaCliente(clienteId) {
   return clienteSemSenha;
 }
 
+async function buscaClientePorEmailESenha(username, senha) {
+  return await ClienteRepository.buscaClientePorEmailESenha(username, senha);
+}
+
 export default {
   insereCliente,
   atualizaCliente,
   deletaCliente,
   buscaClientes,
   buscaCliente,
+  buscaClientePorEmailESenha,
 };

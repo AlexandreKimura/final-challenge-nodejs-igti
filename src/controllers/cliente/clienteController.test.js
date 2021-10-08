@@ -3,7 +3,7 @@ import app from "../../index.js";
 
 import ClienteRepository from "../../repositories/clienteRepository.js";
 
-describe("Testes de integração - Cliente", () => {
+describe.skip("Testes de integração - Cliente", () => {
   beforeEach(async () => {
     await ClienteRepository.limpaBanco();
   });

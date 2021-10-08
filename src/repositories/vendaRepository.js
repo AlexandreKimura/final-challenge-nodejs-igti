@@ -11,7 +11,7 @@ async function insereVenda(venda) {
 
 async function encontraVendaPorCliente(clienteId) {
   try {
-    return await Venda.findAll({ where: { clienteId } });
+    return await Venda.findAll({ where: { clienteId }, raw: true });
   } catch (err) {
     throw err;
   }
